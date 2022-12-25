@@ -1,0 +1,18 @@
+{
+  "name": "newchan",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "author": "nakanokurenai <nakanokurenai@mma.club.uec.ac.jp>",
+  "private": true,
+  "dependencies": {
+    "@slack/bolt": "^3.11.0",
+    "@slack/web-api": "^6.7.1"
+  },
+  "devDependencies": {
+    "prettier": "^2.6.2"
+  },
+  "scripts": {
+    "start": "node ./src/index.js",
+    "fmt": "prettier -w **.js"
+  }
+}

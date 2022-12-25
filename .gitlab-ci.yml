@@ -1,0 +1,30 @@
+image: node
+stages:
+  - bot
+bot:
+  stage: bot
+  only:
+    - schedules
+  script:
+    - yarn
+    - |
+      env NEWCHAN_STATE_FILE="./.gitlab/state_since" SLACK_CHANNEL_NAME="newchan" \
+      node ./src/index.js
+    - mkdir ~/.ssh
+    - printenv SSH_KEY_BASE64 | base64 -d > ~/.ssh/id_rsa
+    - |
+      # ssh-keygen -F <hostname>
+      tee ~/.ssh/known_hosts <<EOF
+      EOF
+    - chmod -R g-rwx,o-rwx ~/.ssh
+    - git config user.name "bot"
+    - git config user.email "bot@example.com"
+    - git add -u
+    - |
+      # diff があるときのみ
+      git diff --cached --exit-code || exit_code=$?
+      if [ $exit_code -eq 1 ]; then
+        echo committing...
+        git commit -m "[ci skip] $(date)"
+        git push ssh://git@<hostname>/nakanokurenai/newchan.git HEAD:master
+      fi
